@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <!--
+    Composition note: a centred app window covers roughly the middle
+    60% of the page, so the detail is deliberately pushed into the top
+    and bottom bands — a cloud bank up high, lit rolling grass down low.
+    The horizon sits at ~42% and reads on wide or short viewports.
+  -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"    stop-color="#12468f"/>
+      <stop offset="0.22" stop-color="#2a6cbb"/>
+      <stop offset="0.48" stop-color="#5e9fd8"/>
+      <stop offset="0.74" stop-color="#9ecbec"/>
+      <stop offset="1"    stop-color="#d6eaf7"/>
+    </linearGradient>
+
+    <linearGradient id="hill" x1="0.1" y1="0" x2="0.75" y2="1">
+      <stop offset="0"    stop-color="#9ad348"/>
+      <stop offset="0.28" stop-color="#74b834"/>
+      <stop offset="0.6"  stop-color="#4e9127"/>
+      <stop offset="1"    stop-color="#2f691a"/>
+    </linearGradient>
+
+    <linearGradient id="farHill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b3dd7a"/>
+      <stop offset="1" stop-color="#7cb843"/>
+    </linearGradient>
+
+    <linearGradient id="foreHill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#57a02c"/>
+      <stop offset="0.5" stop-color="#3c7c1f"/>
+      <stop offset="1"   stop-color="#255413"/>
+    </linearGradient>
+
+    <radialGradient id="sunGlow" cx="0.68" cy="0.10" r="0.62">
+      <stop offset="0"   stop-color="#fffdf0" stop-opacity="0.60"/>
+      <stop offset="0.45" stop-color="#ffeeb4" stop-opacity="0.18"/>
+      <stop offset="1"   stop-color="#ffeeb4" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- warm light washing across the grass from the upper right -->
+    <linearGradient id="grassLight" x1="1" y1="0" x2="0.1" y2="1">
+      <stop offset="0"   stop-color="#eaffb0" stop-opacity="0.34"/>
+      <stop offset="0.45" stop-color="#c6f07a" stop-opacity="0.10"/>
+      <stop offset="1"   stop-color="#000000" stop-opacity="0.10"/>
+    </linearGradient>
+
+    <filter id="soft"   x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="16"/>
+    </filter>
+    <filter id="softer" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
+    <filter id="wispy"  x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="46"/>
+    </filter>
+
+    <pattern id="grass" width="24" height="24" patternUnits="userSpaceOnUse"
+             patternTransform="rotate(-13)">
+      <path d="M3 24 L6 0 M12 24 L14 0 M20 24 L22 0"
+            stroke="#ffffff" stroke-opacity="0.055" stroke-width="2"/>
+    </pattern>
+  </defs>
+
+  <!-- ── Sky ───────────────────────────────────────────────── -->
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <rect width="1600" height="1000" fill="url(#sunGlow)"/>
+
+  <!-- ── Cloud bank, kept high where it stays visible ──────── -->
+  <g fill="#ffffff">
+    <g filter="url(#soft)" opacity="0.92">
+      <ellipse cx="300" cy="118" rx="168" ry="42"/>
+      <ellipse cx="392" cy="96"  rx="112" ry="48"/>
+      <ellipse cx="214" cy="140" rx="104" ry="33"/>
+      <ellipse cx="452" cy="128" rx="78"  ry="28"/>
+    </g>
+    <g filter="url(#soft)" opacity="0.86">
+      <ellipse cx="1210" cy="150" rx="180" ry="44"/>
+      <ellipse cx="1318" cy="126" rx="120" ry="38"/>
+      <ellipse cx="1108" cy="172" rx="104" ry="30"/>
+    </g>
+    <g filter="url(#softer)" opacity="0.62">
+      <ellipse cx="770"  cy="70"  rx="330" ry="30"/>
+      <ellipse cx="905"  cy="196" rx="250" ry="22"/>
+      <ellipse cx="540"  cy="232" rx="200" ry="18"/>
+      <ellipse cx="1450" cy="238" rx="210" ry="20"/>
+    </g>
+    <g filter="url(#wispy)" opacity="0.40">
+      <ellipse cx="420"  cy="330" rx="360" ry="26"/>
+      <ellipse cx="1180" cy="352" rx="330" ry="24"/>
+    </g>
+  </g>
+
+  <!-- ── Distant ridge ─────────────────────────────────────── -->
+  <path d="M0,432 C 210,404 420,424 640,412 C 900,398 1120,424 1330,410
+           C 1450,402 1530,412 1600,406 L1600,1000 L0,1000 Z"
+        fill="url(#farHill)" opacity="0.6"/>
+
+  <!-- ── Main hill ─────────────────────────────────────────── -->
+  <path d="M0,556 C 200,478 430,414 700,404 C 950,394 1180,442 1372,478
+           C 1470,496 1546,504 1600,500 L1600,1000 L0,1000 Z"
+        fill="url(#hill)"/>
+
+  <!-- crest highlight -->
+  <path d="M0,556 C 200,478 430,414 700,404 C 950,394 1180,442 1372,478
+           C 1470,496 1546,504 1600,500 L1600,556 C 1500,560 1414,548 1320,530
+           C 1140,496 950,446 700,458 C 452,470 218,540 0,610 Z"
+        fill="#cdf07e" opacity="0.30" filter="url(#soft)"/>
+
+  <!-- ── Lower field: gentle mounds so the bottom band has form ─ -->
+  <path d="M0,720 C 260,668 520,700 800,726 C 1060,750 1330,742 1600,706
+           L1600,1000 L0,1000 Z"
+        fill="url(#foreHill)" opacity="0.55"/>
+  <path d="M0,868 C 300,812 600,842 900,868 C 1160,890 1400,902 1600,884
+           L1600,1000 L0,1000 Z"
+        fill="url(#foreHill)" opacity="0.85"/>
+
+  <!-- light wash + texture across all the grass -->
+  <path d="M0,556 C 200,478 430,414 700,404 C 950,394 1180,442 1372,478
+           C 1470,496 1546,504 1600,500 L1600,1000 L0,1000 Z"
+        fill="url(#grassLight)"/>
+  <path d="M0,556 C 200,478 430,414 700,404 C 950,394 1180,442 1372,478
+           C 1470,496 1546,504 1600,500 L1600,1000 L0,1000 Z"
+        fill="url(#grass)"/>
+
+  <!-- ── Vignette ──────────────────────────────────────────── -->
+  <radialGradient id="vig" cx="0.5" cy="0.42" r="0.82">
+    <stop offset="0.58" stop-color="#000000" stop-opacity="0"/>
+    <stop offset="1"    stop-color="#001028" stop-opacity="0.26"/>
+  </radialGradient>
+  <rect width="1600" height="1000" fill="url(#vig)"/>
+</svg>

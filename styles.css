@@ -1,0 +1,367 @@
+/* ============================================================
+   Windows Media Player — Visualizer
+   Late-90s / XP-era chrome, drawn entirely with borders + bevels.
+   ============================================================ */
+
+:root {
+  --face:        #d4d0c8;   /* classic dialog grey            */
+  --face-light:  #efeeea;
+  --hi:          #ffffff;   /* bevel highlight                */
+  --lo:          #808080;   /* bevel shadow (soft)            */
+  --lo-dark:     #404040;   /* bevel shadow (hard)            */
+  --title-a:     #0a246a;   /* active title gradient, left    */
+  --title-b:     #a6caf0;   /* active title gradient, right   */
+  --lcd-bg:      #0b1a10;
+  --lcd-fg:      #6bff9a;
+  --ink:         #101010;
+  --font: Tahoma, "Segoe UI", Verdana, Geneva, "DejaVu Sans", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  /* Rolling hills under a big sky — an original illustration in the
+     spirit of the old Windows desktop, not the licensed photograph.
+     The gradient underneath shows through if the SVG ever fails. */
+  background-color: #3d84cf;
+  background-image:
+    url("assets/wallpaper.svg"),
+    linear-gradient(180deg, #1b56a8 0%, #3d84cf 45%, #7db9e8 72%, #b9dcf3 100%);
+  background-size: cover, auto;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: var(--font);
+  font-size: 11px;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Bevel helpers ─────────────────────────────────────────── */
+/* Classic two-tone Windows raised edge, built from inset shadows. */
+.raised {
+  box-shadow:
+    inset  1px  1px 0 0 var(--hi),
+    inset  2px  2px 0 0 var(--face-light),
+    inset -1px -1px 0 0 var(--lo-dark),
+    inset -2px -2px 0 0 var(--lo);
+}
+.sunken {
+  box-shadow:
+    inset  1px  1px 0 0 var(--lo-dark),
+    inset  2px  2px 0 0 var(--lo),
+    inset -1px -1px 0 0 var(--hi),
+    inset -2px -2px 0 0 var(--face-light);
+}
+
+/* ── Window ────────────────────────────────────────────────── */
+.player {
+  width: min(980px, 100%);
+  background: var(--face);
+  border: 1px solid var(--lo-dark);
+  padding: 3px;
+  box-shadow:
+    inset  1px  1px 0 0 var(--hi),
+    inset -1px -1px 0 0 var(--lo),
+    4px 4px 0 0 rgba(0, 0, 0, .35),
+    0 18px 50px rgba(0, 0, 0, .35);
+}
+
+.player:fullscreen,
+.player:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+  border: none;
+}
+.player:fullscreen .body,
+.player:-webkit-full-screen .body { flex: 1; display: flex; flex-direction: column; }
+.player:fullscreen .viz-well,
+.player:-webkit-full-screen .viz-well { flex: 1; height: auto; }
+
+/* ── Title bar ─────────────────────────────────────────────── */
+.titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+  padding: 0 2px 0 3px;
+  background: linear-gradient(90deg, var(--title-a) 0%, #1b4fa8 45%, var(--title-b) 100%);
+  color: #fff;
+  user-select: none;
+}
+
+.titlebar-text {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .2px;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .5);
+}
+
+/* Tiny stylised "play" app icon */
+.titlebar-icon {
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(180deg, #ff8a3d, #d94a12);
+  border: 1px solid #7a2a06;
+  border-radius: 3px;
+  position: relative;
+}
+.titlebar-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 0; height: 0;
+  border-left: 5px solid #fff;
+  border-top: 3.5px solid transparent;
+  border-bottom: 3.5px solid transparent;
+  transform: translateX(1px);
+}
+
+.titlebar-buttons { display: flex; gap: 2px; }
+
+.tb-btn {
+  width: 18px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  background: var(--face);
+  color: var(--ink);
+  font-size: 9px;
+  line-height: 1;
+  box-shadow:
+    inset  1px  1px 0 0 var(--hi),
+    inset -1px -1px 0 0 var(--lo-dark);
+}
+.tb-close { font-weight: 700; }
+
+/* ── Menu strip ────────────────────────────────────────────── */
+.menubar {
+  display: flex;
+  gap: 2px;
+  padding: 2px 3px;
+  border-bottom: 1px solid var(--lo);
+  user-select: none;
+}
+.menubar span {
+  padding: 2px 7px;
+  color: #1a1a1a;
+}
+.menubar span:hover { background: var(--title-a); color: #fff; }
+
+/* ── Body ──────────────────────────────────────────────────── */
+.body { padding: 6px; display: grid; gap: 6px; }
+
+/* ── Visualizer well ───────────────────────────────────────── */
+.viz-well {
+  position: relative;
+  height: clamp(260px, 46vh, 460px);
+  background: #000;
+  overflow: hidden;
+  box-shadow:
+    inset  1px  1px 0 0 var(--lo-dark),
+    inset  2px  2px 0 0 var(--lo),
+    inset -1px -1px 0 0 var(--hi),
+    inset -2px -2px 0 0 var(--face-light);
+}
+
+#viz {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Faint CRT scanlines + corner vignette over the canvas. */
+.scanlines {
+  position: absolute;
+  inset: 2px;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, .035) 0px,
+      rgba(255, 255, 255, .035) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(0, 0, 0, .55) 100%);
+}
+
+.viz-badge {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  padding: 2px 7px;
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(150, 255, 190, .75);
+  background: rgba(0, 0, 0, .45);
+  border: 1px solid rgba(120, 255, 170, .28);
+  pointer-events: none;
+}
+
+/* ── LCD readout ───────────────────────────────────────────── */
+.lcd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px;
+  background: var(--lcd-bg);
+  color: var(--lcd-fg);
+  font-family: "Lucida Console", "DejaVu Sans Mono", Consolas, monospace;
+  font-size: 11px;
+  text-shadow: 0 0 6px rgba(107, 255, 154, .55);
+  box-shadow:
+    inset  1px  1px 0 0 var(--lo-dark),
+    inset  2px  2px 0 0 var(--lo),
+    inset -1px -1px 0 0 var(--hi),
+    inset -2px -2px 0 0 var(--face-light);
+}
+
+.lcd-label {
+  font-size: 9px;
+  letter-spacing: .14em;
+  color: rgba(107, 255, 154, .55);
+  flex: none;
+}
+
+.lcd-marquee {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.lcd-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+.lcd-time { flex: none; color: rgba(107, 255, 154, .8); }
+.lcd.is-error { color: #ff9a7a; text-shadow: 0 0 6px rgba(255, 120, 90, .5); }
+
+/* ── Controls ──────────────────────────────────────────────── */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  appearance: none;
+  font-family: var(--font);
+  font-size: 11px;
+  color: var(--ink);
+  background: var(--face);
+  border: 1px solid var(--lo-dark);
+  padding: 4px 10px;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  user-select: none;
+  box-shadow:
+    inset  1px  1px 0 0 var(--hi),
+    inset -1px -1px 0 0 var(--lo);
+}
+
+.btn:hover { background: #dedad2; }
+
+.btn:active,
+.btn.is-active {
+  background: #c8c4bc;
+  box-shadow:
+    inset  1px  1px 0 0 var(--lo),
+    inset -1px -1px 0 0 var(--hi);
+  padding: 5px 9px 3px 11px;
+}
+
+.btn:focus-visible {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
+}
+
+.btn-primary { font-weight: 700; }
+.glyph { font-size: 11px; line-height: 1; }
+
+.segmented { display: inline-flex; }
+.segmented .seg { min-width: 54px; justify-content: center; }
+.segmented .seg + .seg { margin-left: -1px; }
+
+.divider {
+  width: 1px;
+  align-self: stretch;
+  margin: 2px 4px;
+  background: var(--lo);
+  border-right: 1px solid var(--hi);
+}
+
+.spacer { flex: 1; }
+
+/* ── Status bar ────────────────────────────────────────────── */
+.statusbar {
+  display: flex;
+  gap: 3px;
+  margin-top: 1px;
+}
+
+.status-cell {
+  padding: 3px 6px;
+  color: #303030;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow:
+    inset  1px  1px 0 0 var(--lo),
+    inset -1px -1px 0 0 var(--hi);
+}
+.status-grow { flex: 1; min-width: 0; }
+.status-cell.is-error { color: #a01414; font-weight: 700; }
+
+/* ── Footer hint ───────────────────────────────────────────── */
+.hint {
+  margin: 0;
+  color: rgba(255, 255, 255, .9);
+  font-size: 11px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
+}
+.hint kbd {
+  font-family: var(--font);
+  font-size: 10px;
+  background: var(--face);
+  color: var(--ink);
+  padding: 1px 5px;
+  border: 1px solid var(--lo-dark);
+  box-shadow: inset 1px 1px 0 0 var(--hi);
+}
+
+@media (max-width: 640px) {
+  .spacer { display: none; }
+  .controls { gap: 3px; }
+  .lcd-label { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanlines { display: none; }
+}

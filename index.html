@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Windows Media Player — Visualizer</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="player" id="player">
+
+    <!-- ── Title bar ─────────────────────────────────────────────── -->
+    <div class="titlebar">
+      <div class="titlebar-text">
+        <span class="titlebar-icon" aria-hidden="true"></span>
+        Windows Media Player
+      </div>
+      <div class="titlebar-buttons" aria-hidden="true">
+        <span class="tb-btn">_</span>
+        <span class="tb-btn">□</span>
+        <span class="tb-btn tb-close">✕</span>
+      </div>
+    </div>
+
+    <!-- ── Menu strip (decorative) ───────────────────────────────── -->
+    <div class="menubar" aria-hidden="true">
+      <span>File</span><span>View</span><span>Play</span><span>Favorites</span><span>Help</span>
+    </div>
+
+    <div class="body">
+
+      <!-- ── Visualizer well ─────────────────────────────────────── -->
+      <div class="viz-well" id="vizWell">
+        <canvas id="viz"></canvas>
+        <div class="scanlines" aria-hidden="true"></div>
+        <div class="viz-badge" id="modeBadge">Bars</div>
+      </div>
+
+      <!-- ── LCD readout ─────────────────────────────────────────── -->
+      <div class="lcd">
+        <span class="lcd-label">NOW PLAYING</span>
+        <span class="lcd-marquee"><span class="lcd-text" id="trackName">Oru Naal</span></span>
+        <span class="lcd-time" id="timeText">0:00 / 0:00</span>
+      </div>
+
+      <!-- ── Transport ───────────────────────────────────────────── -->
+      <div class="controls">
+        <button class="btn btn-primary" id="playBtn" type="button">
+          <span class="glyph" id="playGlyph">▶</span><span id="playLabel">Play</span>
+        </button>
+        <button class="btn" id="stopBtn" type="button"><span class="glyph">■</span>Stop</button>
+
+        <span class="divider" aria-hidden="true"></span>
+
+        <label class="btn" for="fileInput" id="fileBtn" tabindex="0" role="button">
+          <span class="glyph">📂</span>Open File…
+        </label>
+        <input type="file" id="fileInput" accept="audio/*" hidden>
+
+        <span class="divider" aria-hidden="true"></span>
+
+        <div class="segmented" role="group" aria-label="Visualization mode">
+          <button class="btn seg is-active" id="modeBars" type="button" data-mode="bars">Bars</button>
+          <button class="btn seg" id="modeRadial" type="button" data-mode="radial">Radial</button>
+          <button class="btn seg" id="modeScope" type="button" data-mode="scope">Scope</button>
+          <button class="btn seg" id="modeCascade" type="button" data-mode="cascade">Cascade</button>
+        </div>
+
+        <span class="spacer"></span>
+
+        <button class="btn" id="fsBtn" type="button"><span class="glyph">⛶</span>Full Screen</button>
+      </div>
+
+      <!-- ── Status bar ──────────────────────────────────────────── -->
+      <div class="statusbar">
+        <span class="status-cell status-grow" id="statusText">Ready. Press Play to begin.</span>
+        <span class="status-cell" id="srcText">Source: default</span>
+        <span class="status-cell">Space · V · F</span>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="hint">
+    Keyboard: <kbd>Space</kbd> play/pause · <kbd>V</kbd> cycle visuals · <kbd>F</kbd> full screen
+  </p>
+
+  <!-- Single audio element. No autoplay: playback only ever starts from a user gesture. -->
+  <audio id="audio" src="songs/oru-naal.mp3" preload="metadata"></audio>
+
+  <script src="app.js"></script>
+</body>
+</html>
